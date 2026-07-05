@@ -318,10 +318,10 @@ function renderCards(city, district) {
                 <div class="action-grid">
                     <!-- onclick 改傳入 firstTel，確保只撥打第一支號碼 -->
                     <a href="#" class="action-btn tel-link" onclick="openCallModal(event, '${item.name}', '${firstTel}')">
-                        <i class="fa-solid fa-phone"></i> 撥打電話：<span class="tel">${item.tel}</span>
+                        <i class="fa-solid fa-phone"></i> 電話：<span class="tel">${item.tel}</span>
                     </a>
                     <a href="${googleMapUrl}" class="action-btn map-link" target="_blank">
-                        <i class="fa-solid fa-location-dot"></i> 查看地圖：<span class="address">${item.address}</span>
+                        <i class="fa-solid fa-location-dot"></i> 地圖：<span class="address">${item.address}</span>
                     </a>
                 </div>
                 <div class="update-time" style="margin-top:16px;">資料更新：${item.update}</div>
