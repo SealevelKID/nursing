@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全臺養護之家</title>
+    <link rel="stylesheet" href="nursingstyle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+    <header class="app-header">
+        <!-- 新增 title-wrapper 將標題與時間標籤包在一起 -->
+        <div class="title-wrapper">
+            <h1><i class="fa-solid fa-house-medical"></i> 全臺養護之家</h1>
+            <span id="globalUpdateTime" class="time-badge"></span>
+        </div>
+
+        <div class="filter-container">
+            <select id="citySelect" class="main-select">
+                <option value="">載入中...</option>
+            </select>
+
+            <select id="districtSelect" class="main-select" disabled>
+                <option value="">請先選擇縣市</option>
+            </select>
+        </div>
+
+        <div class="bed-type-filters" id="typeFilters">
+            <button id="availableOnlyBtn" class="filter-btn toggle-btn">
+                <i class="fa-solid fa-bed"></i> 
+                <span class="text-long">僅顯示可入住</span>
+                <span class="text-short">有空床</span>
+            </button>
+
+            <div class="divider">|</div> 
+
+            <button class="filter-btn type-btn active" data-type="全部">
+                <span class="text-long">全部</span><span class="text-short">全</span>
+            </button>
+            <button class="filter-btn type-btn" data-type="安養">
+                <span class="text-long">安養</span><span class="text-short">安</span>
+            </button>
+            <button class="filter-btn type-btn" data-type="養護">
+                <span class="text-long">養護</span><span class="text-short">養</span>
+            </button>
+            <button class="filter-btn type-btn" data-type="長照">
+                <span class="text-long">長照</span><span class="text-short">長</span>
+            </button>
+            <button class="filter-btn type-btn" data-type="失智">
+                <span class="text-long">失智</span><span class="text-short">失</span>
+            </button>
+        </div>
+    </header>
+
+    <main id="resultsList" class="results-container">
+        <div class="status-msg">資料載入中，請稍候...</div>
+    </main>
+
+    <div id="callModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="callModalText">確定要撥打電話給：<br><span id="modalHomeName"></span> 嗎？</h3>
+            <div class="modal-actions">
+                <button id="cancelCallBtn" class="modal-btn cancel-btn">取消</button>
+                <a id="confirmCallBtn" href="#" class="modal-btn confirm-btn">確定撥打</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <!-- 新增：溫馨提醒警語區塊 -->
+        <div class="disclaimer">
+            💡 <strong>溫馨提醒：</strong><br>
+            本站資訊由 AI 協助整理，方便快速查閱。資料可能會有時間差，為了保障您的權益，請務必以主管機關（各縣市社會局、衛福部）的最新公告為準，並建議在規劃時向相關部門核對確認。
+        </div>
+
+        <!-- 獨立的資料來源區塊 -->
+        <div class="source-info">
+            📊 資料來源：<a href="https://www.sfaa.gov.tw/sfaa/list/detail/5fW/5pe" target="_blank" class="source-link">衛福部社家署官網</a>
+        </div>
+    </footer>
+
+    <script src="nursingscript.js"></script>
+</body>
+
+</html>

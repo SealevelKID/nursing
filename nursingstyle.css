@@ -1,0 +1,535 @@
+:root {
+    --primary-color: #005088;
+    --accent-color: #11caa0;
+    --bg-color: #fffaf1;
+    --card-bg: #ffffff;
+    --text-color: #333;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 16px;
+    font-size: 20px;
+    /* 大字體基礎 */
+}
+
+/* 標題與選單 */
+.app-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+/* 設定置中框架，並作為時間絕對定位的基準點 */
+.title-wrapper {
+    position: relative;        /* 關鍵：讓時間以這個區域的右邊緣為基準點 */
+    max-width: 800px;          /* 緊扣 800px 框架 */
+    margin: 0 auto 16px auto;  /* 區塊置中，並與下方選單維持間距 */
+    display: flex;
+    justify-content: center;   /* 讓主標題 h1 在 800px 內絕對置中 */
+    align-items: center;       /* 垂直居中對齊 */
+}
+
+h1 {
+    color: var(--primary-color);
+    font-size: 28px;
+    margin: 0;
+}
+
+/* 時間標籤：強制靠右、淺灰色、不加粗、縮小字體 */
+.time-badge {
+    position: absolute;        /* 關鍵：抽離排版流程，不影響標題居中精準度 */
+    right: 0;                  /* 完美切齊 800px 框架的最右側邊緣 */
+    bottom: 4px;               /* 稍微往下微調，使其視覺上與標題文字底部對齊 */
+    font-size: 14px;
+    color: #888888;
+    font-weight: normal;
+    white-space: nowrap;       /* 防止時間字串被強制換行 */
+}
+
+/* 讓兩個選單平均佔據寬度 */
+.main-select {
+    flex: 1;           /* 兩者平分寬度 */
+    min-width: 0;      /* 防止文字過長導致容器撐開 */
+    height: 56px;
+    font-size: 20px;   /* 電腦版放大字體，同時預留右側數量文字的空間 */
+    font-weight: bold; /* 字體加粗讓資訊更易讀 */
+    border-radius: 12px;
+    border: 2px solid var(--primary-color);
+    padding: 0 12px;   /* 加大內距讓選單更大氣 */
+}
+
+/* 讓外層容器變為水平排列並加寬 */
+.filter-container {
+    display: flex;
+    gap: 10px; 
+    margin: 0 auto 16px auto;
+    max-width: 800px; /* 放寬為 800px */
+}
+
+.bed-type-filters {
+    display: flex;
+    flex-wrap: wrap;  /* 關鍵修改：取代 overflow-x，讓按鈕空間不夠時自動折行，徹底消滅滑桿 */
+    gap: 8px;
+    padding: 12px 0;
+    justify-content: center;
+    max-width: 800px; /* 與上方選單對齊 */
+    margin: 0 auto;
+}
+/* --- 內容區塊聚攏與視線集中 --- */
+.results-container {
+    max-width: 800px; /* 限制卡片列表的最大寬度，與上方對齊 */
+    margin: 0 auto;   /* 讓整個卡片區塊完美置中 */
+}
+.filter-btn {
+    padding: 10px 20px;
+    border-radius: 25px;
+    border: 1px solid #ccc;
+    background: white;
+    white-space: nowrap;
+    font-size: 18px;
+}
+
+.filter-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* 存股式卡片 */
+.home-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.card-summary {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.home-name {
+    font-size: 24px;
+    margin: 0 0 8px 0;
+    color: var(--primary-color);
+}
+
+.bed-status {
+    font-size: 20px;
+}
+
+.highlight {
+    color: #d9534f;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.expand-icon {
+    position: absolute;
+    right: 20px;
+    bottom: 25px;
+    transition: transform 0.3s;
+}
+
+/* 詳細資訊（預設隱藏） */
+.card-details {
+    max-height: 0;
+    padding: 0 20px;
+    background: #f9f9f9;
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+/* 展開狀態 */
+.home-card.is-expanded .card-details {
+    max-height: 500px;
+    padding: 20px;
+    opacity: 1;
+    border-top: 1px solid #eee;
+}
+
+.home-card.is-expanded .expand-icon {
+    transform: rotate(180deg);
+}
+
+.detail-item {
+    margin-bottom: 16px;
+    font-size: 18px;
+}
+
+.action-btn {
+    display: inline-block;
+    background: #eee;
+    padding: 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: bold;
+    width: 100%;
+}
+
+.update-time {
+    font-size: 14px;
+    color: #888;
+    text-align: right;
+}
+/* =========================================
+   新增優化：公私立徽章與同行左右對齊
+   ========================================= */
+
+/* --- 1. 公私立圓形徽章設計 --- */
+.ownership-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 8px;
+    flex-shrink: 0; /* 防止名稱太長時圓圈被擠壓變形 */
+}
+
+/* 徽章專屬顏色 */
+.badge-gov { background-color: #4a90e2; }        /* 公立：信賴藍 */
+.badge-private { background-color: #f5a623; }    /* 私立：活力橘 */
+.badge-foundation { background-color: #7ed321; } /* 財團法人：安心綠 */
+.badge-default { background-color: #9e9e9e; }    /* 其他：中性灰 */
+
+/* 確保機構名稱與徽章能完美垂直置中對齊 */
+.home-name {
+    display: flex;
+    align-items: center;
+    line-height: 1.4;
+}
+
+/* --- 2. 負責人與統編同行 (左右對齊) --- */
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* 如果遇到超小螢幕手機，會自動換行保護版面不破裂 */
+    gap: 8px;
+    border-bottom: 1px dashed #ddd; /* 加一條虛線分隔線，視覺更俐落 */
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+}
+
+/* --- 3. 視覺平衡：展開提示強制移至右下角 --- */
+.card-summary {
+    position: relative; /* 建立絕對定位的基準點 */
+}
+
+.expand-hint {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    font-size: 16px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.3s;
+}
+
+/* 當卡片展開時，讓提示文字稍微變淡 */
+.home-card.is-expanded .expand-hint {
+    color: #aaa;
+}
+
+.home-card.is-expanded .expand-hint i {
+    transform: rotate(180deg);
+    transition: transform 0.3s;
+}
+/* =========================================
+   卡片內部進階排版與 UI 優化
+   ========================================= */
+
+/* --- 1. 公私立圓形徽章設計 --- */
+.ownership-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+.badge-gov { background-color: #4a90e2; }        /* 公立：信賴藍 */
+.badge-private { background-color: #f5a623; }    /* 私立：活力橘 */
+
+.home-name {
+    display: flex;
+    align-items: flex-start; /* 確保名稱換行時，圓圈保持在左上角 */
+    line-height: 1.4;
+}
+
+/* --- 2. 負責人與統編 (同行左右對齊) --- */
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* 螢幕過小時自動換行 */
+    gap: 8px;
+    border-bottom: 1px dashed #ccc; 
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+}
+
+/* 統編超連結樣式 */
+.tax-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+.tax-link:hover {
+    text-decoration: underline;
+}
+
+/* --- 3. 按鈕網格排版 --- */
+.action-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* 改為靠左對齊 */
+    padding-left: 20px; /* 增加左邊距，讓文字不會貼緊邊緣 */
+    gap: 10px;
+    background: #f0f0f0;
+    padding: 14px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 18px;
+    transition: background 0.2s;
+    border: none;
+    cursor: pointer;
+}
+.action-btn:hover { background: #e0e0e0; }
+
+/* =========================================
+   新增優化：警示備註與精簡版查違規按鈕
+   ========================================= */
+/* 卡片左側粗紅線警示 */
+.warning-card {
+    border-left: 6px solid #d9534f;
+    background-color: #fffdfa;
+}
+
+/* 備註紅字區塊 */
+.note-alert {
+    background: #ffebee;
+    color: #c62828;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-top: 12px;
+    font-weight: bold;
+    font-size: 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+}
+
+/* 精簡版查違規小按鈕 */
+.mini-alert-btn {
+    background: #fff3e0;
+    color: #d84315;
+    border: 1px solid #ffcc80;
+    padding: 6px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+}
+.mini-alert-btn:hover { background: #ffe0b2; }
+/* --- 服務類型標籤與手機版排版 --- */
+.service-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-left: 12px;
+}
+.tag {
+    background: #e8f5e9; /* 護眼淡綠底 */
+    color: #2e7d32;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+/* 螢幕小於 600px 時，標籤自動掉到名稱下方 */
+@media (max-width: 600px) {
+    .home-name {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .service-tags {
+        margin-left: 0;
+        margin-top: 8px;
+    }
+}
+
+/* --- 自訂電話確認彈窗 --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6); /* 半透明黑底 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.modal-content h3 {
+    margin: 0 0 24px 0;
+    font-size: 22px;
+    color: #333;
+    line-height: 1.5;
+}
+#modalHomeName { 
+    color: var(--primary-color); 
+    font-weight: bold; 
+    font-size: 26px;
+}
+.modal-actions {
+    display: flex;
+    gap: 16px;
+}
+.modal-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+.cancel-btn { background: #eee; color: #666; }
+.confirm-btn { background: var(--primary-color); color: white; }
+/* --- 頁尾警語與官方來源樣式 --- */
+.app-footer {
+    text-align: center;
+    padding: 30px 16px 20px 16px; /* 增加左右 padding，防止手機版貼緊螢幕邊緣 */
+    margin-top: 40px;
+    border-top: 1px solid #ddd;
+}
+
+/* 警語區塊：最大 800px 置中對齊，背景微灰襯托 */
+.disclaimer {
+    max-width: 800px;
+    margin: 0 auto 20px auto;
+    padding: 16px 20px;
+    background-color: #f9f9f9;
+    border: 1px dashed #ccc;
+    border-radius: 12px;
+    color: #555;
+    font-size: 16px; /* 電腦版適中字體 */
+    line-height: 1.6;
+    text-align: left; /* 多行文字靠左對齊最易讀 */
+}
+
+.disclaimer strong {
+    color: var(--primary-color);
+}
+
+.source-info {
+    font-size: 16px;
+    color: #666;
+}
+
+.source-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+.source-link:hover {
+    text-decoration: underline;
+}
+/* --- 電腦與手機版的按鈕文字切換 --- */
+.text-short {
+    display: none; /* 在電腦上，預設隱藏單字版本 */
+}
+
+/* 當螢幕寬度小於 600px (手機模式) 時觸發 */
+@media (max-width: 600px) {
+    .text-long {
+        display: none; /* 手機版隱藏完整文字 */
+    }
+    .text-short {
+        display: inline; /* 手機版顯示單字 */
+    }
+    .filter-btn {
+        padding: 8px 14px; /* 手機版按鈕稍微縮小內距，看起來更精緻 */
+        font-size: 16px;
+    }
+    .main-select {
+        font-size: 18px;   
+        padding: 0 8px;    
+    }
+    
+    /* 新增：手機版安全防護，改為上下列避免重疊 */
+    .title-wrapper {
+        flex-direction: column; /* 改為上下排列 */
+        gap: 8px;
+    }
+    .time-badge {
+        position: static;       /* 解除絕對定位 */
+        text-align: center;     /* 手機版改為置中呈現，視覺最和諧 */
+    }
+    /* 新增：手機版頁尾警語與來源的字體縮小 */
+    .disclaimer {
+        font-size: 14px;      /* 手機版縮小字體，畫面不顯擁擠 */
+        padding: 12px 16px;
+        text-align: justify;  /* 手機版使用左右對齊，版面更工整 */
+        line-height: 1.5;
+    }
+    .source-info {
+        font-size: 14px;
+    }
+}
