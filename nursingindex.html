@@ -59,6 +59,9 @@
         <div class="status-msg">資料載入中，請稍候...</div>
     </main>
 
+    <!-- 【新增】：分頁控制區塊，放在 main 的正下方 -->
+    <div id="paginationContainer" class="pagination-container"></div>
+
     <div id="callModal" class="modal-overlay">
         <div class="modal-content">
             <h3 id="callModalText">確定要撥打電話給：<br><span id="modalHomeName"></span> 嗎？</h3>
@@ -70,15 +73,15 @@
     </div>
 
     <footer class="app-footer">
-        <!-- 新增：溫馨提醒警語區塊 -->
-        <div class="disclaimer">
-            💡 <strong>溫馨提醒：</strong><br>
-            本站資訊由 AI 協助整理，方便快速查閱。資料可能會有時間差，為了保障您的權益，請務必以主管機關（各縣市社會局、衛福部）的最新公告為準，並建議在規劃時向相關部門核對確認。
+        <!-- 獨立的資料來源區塊 (移到上方，並加上 margin-bottom 產生間距) -->
+        <div class="source-info" style="margin-bottom: 20px;">
+            📊 資料來源：<a href="https://www.sfaa.gov.tw/sfaa/list/detail/5fW/5pe" target="_blank" class="source-link">衛福部社家署官網</a>
         </div>
 
-        <!-- 獨立的資料來源區塊 -->
-        <div class="source-info">
-            📊 資料來源：<a href="https://www.sfaa.gov.tw/sfaa/list/detail/5fW/5pe" target="_blank" class="source-link">衛福部社家署官網</a>
+        <!-- 溫馨提醒警語區塊 (移到下方) -->
+        <div class="disclaimer">
+            💡 <strong>溫馨提醒：</strong><br>
+            本站資訊由 AI 協助整理，方便快速查閱。資料可能會有時間差，為了保障您的權益，請以主管機關（各縣市社會局、衛福部）的最新公告為準，並在規劃時向相關部門核對確認。
         </div>
     </footer>
 
