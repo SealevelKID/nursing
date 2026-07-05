@@ -313,9 +313,9 @@ h1 {
 
 .action-btn {
     display: flex;
-    align-items: center;
-    justify-content: flex-start; /* 改為靠左對齊 */
-    padding-left: 20px; /* 增加左邊距，讓文字不會貼緊邊緣 */
+    align-items: flex-start; /* 【修改】：改為靠上對齊，避免電話折行時標題跑掉 */
+    justify-content: flex-start; 
+    padding-left: 20px; 
     gap: 10px;
     background: #f0f0f0;
     padding: 14px;
@@ -329,6 +329,12 @@ h1 {
     cursor: pointer;
 }
 .action-btn:hover { background: #e0e0e0; }
+
+/* 【新增】：強制按鈕前方的標籤（電話、地圖）不換行、不被擠壓 */
+.btn-label {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
 
 /* =========================================
    新增優化：警示備註與精簡版查違規按鈕
@@ -385,18 +391,6 @@ h1 {
     font-size: 16px;
     font-weight: normal;
     white-space: nowrap;
-}
-
-/* 螢幕小於 600px 時，標籤自動掉到名稱下方 */
-@media (max-width: 600px) {
-    .home-name {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .service-tags {
-        margin-left: 0;
-        margin-top: 8px;
-    }
 }
 
 /* --- 自訂電話確認彈窗 --- */
@@ -479,7 +473,7 @@ h1 {
 }
 
 .source-info {
-    font-size: 16px;
+    font-size: 20px;
     color: #666;
 }
 
@@ -496,8 +490,52 @@ h1 {
     display: none; /* 在電腦上，預設隱藏單字版本 */
 }
 
+/* =========================================
+   新增：分頁控制區塊樣式
+   ========================================= */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin: 20px auto 40px auto; /* 與上方卡片和下方頁尾保持距離 */
+    max-width: 800px;
+}
+
+.page-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.page-btn:hover {
+    background-color: #003d66; /* 滑過時稍微變深 */
+}
+
+/* 當按鈕不可點擊時（例如已經是第一頁或最後一頁）的樣式 */
+.page-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.page-info {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
 /* 當螢幕寬度小於 600px (手機模式) 時觸發 */
 @media (max-width: 600px) {
+    .tax-box {
+        margin-left: auto;
+    }
+    
     .text-long {
         display: none; /* 手機版隱藏完整文字 */
     }
@@ -512,6 +550,15 @@ h1 {
         font-size: 18px;   
         padding: 0 8px;    
     }
+
+    .home-name {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .service-tags {
+        margin-left: 0;
+        margin-top: 8px;
+    }
     
     /* 新增：手機版安全防護，改為上下列避免重疊 */
     .title-wrapper {
@@ -522,14 +569,14 @@ h1 {
         position: static;       /* 解除絕對定位 */
         text-align: center;     /* 手機版改為置中呈現，視覺最和諧 */
     }
-    /* 新增：手機版頁尾警語與來源的字體縮小 */
+    /* 【修改】：手機版頁尾警語與來源的字體放大 */
     .disclaimer {
-        font-size: 14px;      /* 手機版縮小字體，畫面不顯擁擠 */
+        font-size: 16px;      /* 從 14px 改為 16px */
         padding: 12px 16px;
-        text-align: justify;  /* 手機版使用左右對齊，版面更工整 */
+        text-align: justify;  
         line-height: 1.5;
     }
     .source-info {
-        font-size: 14px;
+        font-size: 20px; 
     }
-}
+}    
