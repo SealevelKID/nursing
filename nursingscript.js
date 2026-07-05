@@ -1,7 +1,11 @@
 // 儲存原始資料與目前篩選狀態
 let allNursingHomes = [];
 let currentType = '全部';
-let showAvailableOnly = false; 
+let showAvailableOnly = false;
+
+// 【新增】：分頁狀態與每頁筆數
+let currentPage = 1;
+const itemsPerPage = 10;
 
 // 開啟彈窗
 function openCallModal(event, name, tel) {
@@ -23,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('callModal').addEventListener('click', (e) => {
         if (e.target.id === 'callModal') closeCallModal();
     });
-    
+
     initApp();
 });
 
@@ -31,19 +35,19 @@ async function initApp() {
     try {
         const response = await fetch('data.json');
         if (!response.ok) throw new Error('網路回應異常');
-        
+
         allNursingHomes = await response.json();
-        
+
         // 新增：抓取第一筆資料的更新年月，顯示在標題旁 (項目二)
         if (allNursingHomes.length > 0 && allNursingHomes[0].update) {
             document.getElementById('globalUpdateTime').textContent = `資料更新：${allNursingHomes[0].update}`;
         }
-        
+
         initCitySelect();
         setupEventListeners();
-        
+
         document.getElementById('resultsList').innerHTML = '<div class="status-msg">請選擇縣市開始查詢</div>';
-        
+
     } catch (error) {
         console.error('讀取資料失敗:', error);
         document.getElementById('resultsList').innerHTML = '<div class="status-msg">資料載入失敗，請確認 data.json 是否存在。</div>';
@@ -54,7 +58,7 @@ function initCitySelect() {
     const citySelect = document.getElementById('citySelect');
     // 從資料庫抓出所有不重複的縣市名單
     const cities = [...new Set(allNursingHomes.map(item => item.city))].filter(city => city !== "");
-    
+
     // 定義五大區域對照表 (包含您指定的離島地區)
     const regionMap = {
         "北部地區": ["基隆市", "臺北市", "新北市", "桃園市", "新竹市", "新竹縣", "宜蘭縣"],
@@ -70,7 +74,7 @@ function initCitySelect() {
     for (const [regionName, cityList] of Object.entries(regionMap)) {
         // 先篩選出這個區域中，實際「有出現在 JSON 資料庫裡」的縣市
         const availableCities = cityList.filter(city => cities.includes(city));
-        
+
         // 如果這個區域有資料，才建立下拉選單群組 (避免出現空的分隔線)
         if (availableCities.length > 0) {
             const optgroup = document.createElement('optgroup');
@@ -85,7 +89,7 @@ function initCitySelect() {
                 option.textContent = `${city} (${count}家)`; // 動態注入數量
                 optgroup.appendChild(option);
             });
-            
+
             citySelect.appendChild(optgroup);
         }
     }
@@ -94,15 +98,15 @@ function initCitySelect() {
 function updateDistrictSelect(selectedCity) {
     const districtSelect = document.getElementById('districtSelect');
     districtSelect.innerHTML = '<option value="">全區 (不限行政區)</option>';
-    
+
     if (!selectedCity) {
         districtSelect.disabled = true;
         return;
     }
-    
+
     const cityData = allNursingHomes.filter(item => item.city === selectedCity);
     const districts = [...new Set(cityData.map(item => item.district))].filter(dist => dist !== "未知區");
-    
+
     districts.forEach(district => {
         // 新增：計算該行政區狀態為「營業中」的機構數量 (項目一)
         const count = cityData.filter(item => item.district === district && item.status === "營業中").length;
@@ -112,7 +116,7 @@ function updateDistrictSelect(selectedCity) {
         option.textContent = `${district} (${count}家)`; // 動態注入數量
         districtSelect.appendChild(option);
     });
-    
+
     districtSelect.disabled = false;
 }
 
@@ -124,9 +128,10 @@ function setupEventListeners() {
     citySelect.addEventListener('change', (e) => {
         const selectedCity = e.target.value;
         updateDistrictSelect(selectedCity);
-        
+
         if (selectedCity) {
-            renderCards(selectedCity, ""); 
+            currentPage = 1; // 【新增】這行
+            renderCards(selectedCity, "");
         } else {
             resultsList.innerHTML = '<div class="status-msg">請選擇縣市開始查詢</div>';
         }
@@ -136,6 +141,7 @@ function setupEventListeners() {
         const selectedCity = citySelect.value;
         const selectedDistrict = e.target.value;
         if (selectedCity) {
+            currentPage = 1; // 【新增】這行
             renderCards(selectedCity, selectedDistrict);
         }
     });
@@ -146,20 +152,24 @@ function setupEventListeners() {
             filterBtns.forEach(b => b.classList.remove('active'));
             e.currentTarget.classList.add('active'); // 改成 e.currentTarget
             currentType = e.currentTarget.getAttribute('data-type'); // 改成 e.currentTarget
-            
+
             const city = citySelect.value;
-            if (city) renderCards(city, districtSelect.value);
+            if (city) 
+                currentPage = 1; // 【新增】這行
+                renderCards(city, districtSelect.value);
         });
     });
 
     const availableBtn = document.getElementById('availableOnlyBtn');
     if (availableBtn) {
         availableBtn.addEventListener('click', (e) => {
-            showAvailableOnly = !showAvailableOnly; 
-            e.currentTarget.classList.toggle('active', showAvailableOnly); 
-            
+            showAvailableOnly = !showAvailableOnly;
+            e.currentTarget.classList.toggle('active', showAvailableOnly);
+
             const city = citySelect.value;
-            if (city) renderCards(city, districtSelect.value);
+            if (city) 
+                currentPage = 1; // 【新增】這行
+                renderCards(city, districtSelect.value);
         });
     }
 
@@ -174,7 +184,7 @@ function setupEventListeners() {
 
 function renderCards(city, district) {
     const resultsList = document.getElementById('resultsList');
-    
+
     const filteredData = allNursingHomes.filter(item => {
         const matchCity = item.city === city;
         const matchDistrict = (district === "") ? true : (item.district === district);
@@ -192,24 +202,40 @@ function renderCards(city, district) {
         // 判斷該機構的 ownership 欄位是否包含「公」字
         const aIsGov = (a.ownership && a.ownership.includes('公')) ? 1 : 0;
         const bIsGov = (b.ownership && b.ownership.includes('公')) ? 1 : 0;
-        
+
         // 讓數值大的 (1，代表公立) 排在前面
-        return bIsGov - aIsGov; 
+        return bIsGov - aIsGov;
     });
 
-    if (filteredData.length === 0) {
+    // =========================================
+    // 【新增】：計算分頁範圍並裁切資料
+    // =========================================
+    const totalItems = filteredData.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // 防呆：確保當前頁數不會超出範圍
+    if (currentPage > totalPages) currentPage = totalPages || 1;
+
+    // 只抓取該頁的 10 筆資料
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
+
+    if (totalItems === 0) {
         resultsList.innerHTML = '<div class="status-msg">目前無符合條件的機構資料</div>';
+        document.getElementById('paginationContainer').innerHTML = ''; // 清空分頁
         return;
     }
 
     resultsList.innerHTML = ''; 
 
-    filteredData.forEach(item => {
+    // 【修改】：把原本的 filteredData.forEach 改成 paginatedData.forEach
+    paginatedData.forEach(item => {
+
         const card = document.createElement('div');
         card.className = 'home-card';
-        
+
         const ratingHtml = item.rating ? `<div class="rating-tag">評鑑：<span>${item.rating}</span></div>` : '';
-        
+
         // 1. 公私立徽章判斷邏輯
         let badgeHtml = '';
         if (item.ownership) {
@@ -229,7 +255,7 @@ function renderCards(city, district) {
         // 防呆 2：智慧掃描備註，相容引號與各種改名寫法（如：原為...、原名...、原"..."改名）
         if (item.note) {
             let oldName = '';
-            
+
             // 模式 A：抓取雙引號內的所有文字，例如：原"少同老人..."改名
             const matchQuote = item.note.match(/原"([^"]+)"/);
             if (matchQuote && matchQuote[1]) {
@@ -241,7 +267,7 @@ function renderCards(city, district) {
                     oldName = matchText[1];
                 }
             }
-            
+
             // 如果成功逼出舊名稱，拔除殘留引號後塞進搜尋池，讓新舊名字並肩作戰！
             if (oldName) {
                 const cleanOldName = oldName.replace(/["']/g, '');
@@ -268,7 +294,7 @@ function renderCards(city, district) {
 
         const searchKw = encodeURIComponent(searchQuery);
         const violationBtn = `<a href="https://www.google.com/search?q=${searchKw}" class="mini-alert-btn" target="_blank"><i class="fa-solid fa-magnifying-glass"></i> 查詢</a>`;
-        
+
         // 3. 標準化 Google Map 導航網址
         const mapSearch = encodeURIComponent(item.city + item.district + item.address);
         const googleMapUrl = `https://www.google.com/maps/search/?api=1&query=${mapSearch}`;
@@ -276,19 +302,22 @@ function renderCards(city, district) {
         // 4. 備註警示邏輯 (如果有備註，啟動卡片變色與紅字提示)
         let noteHtml = '';
         if (item.note && item.note.trim() !== '') {
-            card.classList.add('warning-card'); 
+            card.classList.add('warning-card');
             noteHtml = `<div class="note-alert"><i class="fa-solid fa-triangle-exclamation" style="margin-top:3px;"></i> <span>備註：${item.note}</span></div>`;
- }
-            // 5. 服務標籤邏輯 (如果有安養、養護等，生成綠色小膠囊)
+        }
+        // 5. 服務標籤邏輯 (如果有安養、養護等，生成綠色小膠囊)
         let tagsHtml = '';
         if (item.types && item.types.length > 0) {
             const tagSpans = item.types.map(t => `<span class="tag">${t}</span>`).join('');
             tagsHtml = `<div class="service-tags">${tagSpans}</div>`;
         }
-        
+
         // 確保電話撥打功能只抓取第一支電話 (防止「、」導致無法撥號)
         const firstTel = item.tel ? item.tel.split('、')[0] : '';
-        
+
+        // 加入一個 6px 高度的隱藏區塊來撐開微小間距
+        const displayTel = item.tel ? item.tel.replace(/、/g, '<br><span style="display:block; height:6px;"></span>') : '';
+
         card.innerHTML = `
             <div class="card-summary">
                 <div class="info-primary">
@@ -316,17 +345,72 @@ function renderCards(city, district) {
                 </div>
                 
                 <div class="action-grid">
-                    <!-- onclick 改傳入 firstTel，確保只撥打第一支號碼 -->
-                    <a href="#" class="action-btn tel-link" onclick="openCallModal(event, '${item.name}', '${firstTel}')">
-                        <i class="fa-solid fa-phone"></i> 電話：<span class="tel">${item.tel}</span>
-                    </a>
-                    <a href="${googleMapUrl}" class="action-btn map-link" target="_blank">
-                        <i class="fa-solid fa-location-dot"></i> 地圖：<span class="address">${item.address}</span>
-                    </a>
-                </div>
+    <!-- onclick 依然傳入 firstTel 確保撥打正確，顯示的電話改為 displayTel 實現換行 -->
+    <a href="#" class="action-btn tel-link" onclick="openCallModal(event, '${item.name}', '${firstTel}')">
+        <span class="btn-label"><i class="fa-solid fa-phone"></i> 電話：</span><span class="tel">${displayTel}</span>
+    </a>
+    <a href="${googleMapUrl}" class="action-btn map-link" target="_blank">
+        <span class="btn-label"><i class="fa-solid fa-location-dot"></i> 地圖：</span><span class="address">${item.address}</span>
+    </a>
+</div>
                 <div class="update-time" style="margin-top:16px;">資料更新：${item.update}</div>
             </div>
         `;
         resultsList.appendChild(card);
     });
+
+    // 【新增】：呼叫分頁按鈕生成函數
+    renderPagination(totalPages);
+}
+
+// =========================================
+// 新增：渲染分頁按鈕函數
+// =========================================
+function renderPagination(totalPages) {
+    const container = document.getElementById('paginationContainer');
+
+    // 如果只有一頁或沒有資料，就不顯示分頁區塊
+    if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+    }
+
+    const isFirstPage = currentPage === 1;
+    const isLastPage = currentPage === totalPages;
+
+    container.innerHTML = `
+        <button id="prevPageBtn" class="page-btn" ${isFirstPage ? 'disabled' : ''}>上一頁</button>
+        <span class="page-info">第 ${currentPage} / ${totalPages} 頁</span>
+        <button id="nextPageBtn" class="page-btn" ${isLastPage ? 'disabled' : ''}>下一頁</button>
+    `;
+
+    // 綁定「上一頁」點擊事件
+    const prevBtn = document.getElementById('prevPageBtn');
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                const city = document.getElementById('citySelect').value;
+                const district = document.getElementById('districtSelect').value;
+                renderCards(city, district);
+                // 自動往上捲動到卡片最上方，提升閱讀體驗
+                document.getElementById('resultsList').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
+
+    // 綁定「下一頁」點擊事件
+    const nextBtn = document.getElementById('nextPageBtn');
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                const city = document.getElementById('citySelect').value;
+                const district = document.getElementById('districtSelect').value;
+                renderCards(city, district);
+                // 自動往上捲動到卡片最上方
+                document.getElementById('resultsList').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
 }
