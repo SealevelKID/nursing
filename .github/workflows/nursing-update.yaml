@@ -84,6 +84,8 @@ jobs:
         if: failure()
         run: |
           ERROR_LOG_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          curl -s -X POST https://api.telegram.org/bot${{ env.TELEGRAM_BOT_TOKEN }}/sendMessage \
-          -d chat_id=${{ env.TELEGRAM_CHAT_ID }} \
-          -d text="🚨 警告：【長照機構查詢網】資料更新失敗！%0A%0A請檢查 Excel 格式是否發生變動。%0A👉 點此查看報錯紀錄：%0A$ERROR_LOG_URL"ERROR_LOG_URL"
+          MSG="🚨 警告：【長照機構查詢網】資料更新失敗！%0A%0A請檢查 Excel 格式是否發生變動。%0A👉 點此查看報錯紀錄：%0A${ERROR_LOG_URL}"
+          
+          curl -s -X POST "https://api.telegram.org/bot${{ env.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ env.TELEGRAM_CHAT_ID }}" \
+            -d text="${MSG}"
