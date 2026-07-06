@@ -284,7 +284,7 @@ function renderCards(city, district) {
         const queryPrefix = searchTerms.join(' OR ');
 
         // 擴充黑歷史地雷關鍵字（司法級防禦：新增法院、起訴，並涵蓋各式公文標題）
-        const dangerKeywords = "違規 OR 裁罰 OR 處分 OR 勞動糾紛 OR 糾紛 OR 洗錢 OR 不當 OR 虐待 OR 疏忽 OR 超收 OR 非法外勞 OR 違反 OR 老福法 OR 不合格 OR 法院 OR 起訴";
+        const dangerKeywords = "違規 OR 裁罰 OR 處分 OR 勞動糾紛 OR 糾紛 OR 洗錢 OR 不當 OR 虐待 OR 疏忽 OR 超收 OR 非法外勞 OR 非法 OR 違反 OR 老福法 OR 不合格 OR 法院 OR 起訴";
 
         // 核心防護牆：強制網頁必須包含長照相關字眼，杜絕同名負責人的餐廳評價等無關雜訊
         const industryAnchor = "長照 OR 養護 OR 安養 OR 老人福利 OR 老人機構";
