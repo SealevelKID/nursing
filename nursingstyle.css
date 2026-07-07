@@ -330,6 +330,12 @@ h1 {
 }
 .action-btn:hover { background: #e0e0e0; }
 
+/* 專屬政府查詢面板：按鈕文字置中，不影響卡片內按鈕 */
+#govLinksModal .action-btn {
+    justify-content: center;
+    padding-left: 0; /* 移除預設的靠左內距，達到完美置中 */
+}
+
 /* 【新增】：強制按鈕前方的標籤（電話、地圖）不換行、不被擠壓 */
 .btn-label {
     flex-shrink: 0;
@@ -577,6 +583,40 @@ h1 {
     border-radius: 50%; /* 強制圓形 */
 }
 
+/* =========================================
+   自訂 Tooltip 提示框樣式 (取代原生 title)
+   ========================================= */
+.custom-tooltip {
+    position: absolute;
+    top: 100%;             /* 顯示在按鈕的正下方 */
+    right: 0;              /* 靠右對齊按鈕邊緣 */
+    margin-top: 8px;
+    background-color: #333333;
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    white-space: nowrap;   /* 強制文字不換行 */
+    opacity: 0;            /* 預設透明隱藏 */
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    z-index: 100;
+    pointer-events: none;  /* 防止提示框阻擋點擊 */
+}
+
+/* 電腦版：滑鼠懸停時自動顯示 */
+@media (min-width: 601px) {
+    .gov-icon-btn:hover .custom-tooltip {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* 手機版：透過 JS 動態加入 active 類別來顯示 */
+.custom-tooltip.active {
+    opacity: 1;
+    visibility: visible;
+}
 /* 當螢幕寬度小於 600px (手機模式) 時觸發 */
 @media (max-width: 600px) {
     .tax-box {
@@ -634,17 +674,22 @@ h1 {
     .gov-icon-btn {
         position: absolute;
         right: 10px;
-        top: 0; /* 靠右上角 */
+        top: 0; 
         bottom: auto;
+    }
+
+    /* 【新增】：單獨放大手機版圖示，使其與標題文字等高 (約28px) */
+    .gov-icon-btn i {
+        font-size: 28px;
     }
 
     /* 任務二手機版：五顆按鈕打包控制 */
     .type-group {
         display: flex;
-        flex-wrap: wrap;      /* 允許換行 */
-        gap: 6px;             /* 維持緊湊間距 */
-        justify-content: flex-start;
-        max-width: 110px;     /* 【修改控寬】：降至 110px，精準匹配縮小後的按鈕，維持 3+2 完美斷行 */
+        flex-wrap: wrap;         /* 允許換行 */
+        gap: 6px;                
+        justify-content: center; /* 【修改】：改為置中對齊，讓換行後的 長、失 落在空隙中間 */
+        max-width: 100%;         /* 【修改】：解除強制寬度限制，空間夠就排一行，不夠才自然換行 */
     }
 
     /* 手機版圓形按鈕微幅縮小 */
