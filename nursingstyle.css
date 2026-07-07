@@ -313,7 +313,7 @@ h1 {
 
 .action-btn {
     display: flex;
-    align-items: flex-start; /* 【修改】：改為靠上對齊，避免電話折行時標題跑掉 */
+    align-items: baseline; /* 【修改】：改為基線對齊，讓圖示與文字完美水平切齊 */
     justify-content: flex-start; 
     padding-left: 20px; 
     gap: 10px;
