@@ -529,6 +529,53 @@ h1 {
     font-weight: bold;
     color: var(--text-color);
 }
+/* =========================================
+   【任務一與任務二】新增基礎樣式設定
+   ========================================= */
+
+/* 電腦版：調整時間標籤向左移，把最右邊的空間讓給政府按鈕 */
+.time-badge {
+    right: 45px; /* 原本是 0，向左挪開留出空間 */
+}
+
+/* 政府按鈕基本外觀與定位 */
+.gov-icon-btn {
+    position: absolute;
+    right: 0;          /* 完美切齊 800px 框架最右側 */
+    bottom: 0;
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 24px;   /* 圖示大小 */
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.gov-icon-btn:hover {
+    color: var(--accent-color); /* 滑鼠移過去變色 */
+}
+
+/* 任務二：電腦版五顆按鈕群組，維持水平不換行 */
+.type-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+
+/* 確保按鈕在群組內是漂亮的圓形 */
+.type-group .type-btn {
+    width: 52px;          /* 【修改】：從 44px 放大至 52px */
+    height: 52px;         /* 【修改】：從 44px 放大至 52px */
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* 強制圓形 */
+}
 
 /* 當螢幕寬度小於 600px (手機模式) 時觸發 */
 @media (max-width: 600px) {
@@ -560,10 +607,14 @@ h1 {
         margin-top: 8px;
     }
     
-    /* 新增：手機版安全防護，改為上下列避免重疊 */
+    /* 手機版標題框架維持相對定位，方便按鈕靠右對齊 */
     .title-wrapper {
-        flex-direction: column; /* 改為上下排列 */
-        gap: 8px;
+        position: relative;
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+        padding-right: 50px; /* 右側留白，防止標題或時間撞到政府按鈕 */
+        box-sizing: border-box;
     }
     .time-badge {
         position: static;       /* 解除絕對定位 */
@@ -578,5 +629,33 @@ h1 {
     }
     .source-info {
         font-size: 20px; 
+    }
+    /* 手機版：政府按鈕強制定立在 全臺養護之家 的右側靠右 */
+    .gov-icon-btn {
+        position: absolute;
+        right: 10px;
+        top: 0; /* 靠右上角 */
+        bottom: auto;
+    }
+
+    /* 任務二手機版：五顆按鈕打包控制 */
+    .type-group {
+        display: flex;
+        flex-wrap: wrap;      /* 允許換行 */
+        gap: 6px;             /* 維持緊湊間距 */
+        justify-content: flex-start;
+        max-width: 110px;     /* 【修改控寬】：降至 110px，精準匹配縮小後的按鈕，維持 3+2 完美斷行 */
+    }
+
+    /* 手機版圓形按鈕微幅縮小 */
+    .type-group .type-btn {
+        width: 32px;          /* 【修改尺寸】：縮小至 32px */
+        height: 32px;         /* 【修改尺寸】：縮小至 32px */
+        font-size: 14px;      /* 【修改字級】：調小至 14px 以適應按鈕空間 */
+    }
+    
+    /* 微調分隔線左右間距 */
+    .divider {
+        margin: 0 4px;
     }
 }    
