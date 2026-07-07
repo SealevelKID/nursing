@@ -382,14 +382,15 @@ function renderCards(city, district) {
                     <span class="count highlight">${item.available_beds}</span> 
                     <span class="total">/ ${item.total_beds} 床</span>
                 </div>
-                <div class="expand-hint"><i class="fa-solid fa-chevron-down"></i> 點擊看詳細資訊</div>
+                <div class="expand-hint"><i class="fa-solid fa-chevron-down"></i> 詳細資訊</div>
             </div>
             
             <div class="card-details">
                 <div class="detail-item flex-between">
                     <div class="manager-box">
-                        <i class="fa-solid fa-user-tie"></i> 負責人：<span class="manager">${item.manager}</span> | 
-                        立案日期：<span class="establish">${item.establish_date || '未知'}</span>
+                        <i class="fa-solid fa-user-tie"></i> 負責人：<span class="manager">${item.manager}</span> 
+                        <span class="desktop-divider"> | </span> 
+                        <span class="establish-box">立案日期：<span class="establish">${item.establish_date || '未知'}</span></span>
                     </div>
                     <div class="tax-box">
                         ${violationBtn}
