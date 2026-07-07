@@ -21,11 +21,28 @@ function closeCallModal() {
     document.getElementById('callModal').classList.remove('active');
 }
 
+// 【任務一新增】：開啟政府連結彈窗
+function openGovLinksModal() {
+    document.getElementById('govLinksModal').classList.add('active');
+}
+
+// 【任務一新增】：關閉政府連結彈窗
+function closeGovLinksModal() {
+    document.getElementById('govLinksModal').classList.remove('active');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // 綁定取消按鈕與點擊黑底關閉彈窗
     document.getElementById('cancelCallBtn').addEventListener('click', closeCallModal);
     document.getElementById('callModal').addEventListener('click', (e) => {
         if (e.target.id === 'callModal') closeCallModal();
+    });
+
+    // 【任務一新增】：綁定政府連結按鈕、關閉按鈕與點擊黑底關閉彈窗
+    document.getElementById('govLinksBtn').addEventListener('click', openGovLinksModal);
+    document.getElementById('closeGovLinksBtn').addEventListener('click', closeGovLinksModal);
+    document.getElementById('govLinksModal').addEventListener('click', (e) => {
+        if (e.target.id === 'govLinksModal') closeGovLinksModal();
     });
 
     initApp();
