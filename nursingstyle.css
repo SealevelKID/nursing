@@ -703,4 +703,13 @@ h1 {
     .divider {
         margin: 0 4px;
     }
+
+    /* 手機版：負責人與立案日期分行排列 */
+    .desktop-divider {
+        display: none; /* 隱藏原本的直線 | */
+    }
+    .establish-box {
+        display: block;  /* 強制換行 */
+        margin-top: 6px; /* 與上方的負責人拉開一點間隔 */
+    }
 }    
