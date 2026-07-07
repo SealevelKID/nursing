@@ -38,13 +38,48 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.id === 'callModal') closeCallModal();
     });
 
-    // 【任務一新增】：綁定政府連結按鈕、關閉按鈕與點擊黑底關閉彈窗
-    document.getElementById('govLinksBtn').addEventListener('click', openGovLinksModal);
-    document.getElementById('closeGovLinksBtn').addEventListener('click', closeGovLinksModal);
-    document.getElementById('govLinksModal').addEventListener('click', (e) => {
+    // 【升級任務】：綁定政府連結按鈕 (支援手機版第1次提示，第2次開啟)
+    const govBtn = document.getElementById('govLinksBtn');
+    const govTooltip = document.getElementById('govTooltip');
+    const closeGovBtn = document.getElementById('closeGovLinksBtn');
+    const govModal = document.getElementById('govLinksModal');
+
+    govBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); 
+        
+        // 【修改】：嚴格只認螢幕寬度，小於等於 600px 才是手機版
+        const isMobile = window.innerWidth <= 600;
+        
+        if (isMobile) {
+            // 手機模式：判斷 tooltip 狀態
+            if (!govTooltip.classList.contains('active')) {
+                // 第 1 次點擊：展開提示框
+                govTooltip.classList.add('active');
+            } else {
+                // 第 2 次點擊：開啟面板並收合提示框
+                openGovLinksModal();
+                govTooltip.classList.remove('active');
+            }
+        } else {
+            // 電腦模式：點擊直接開啟面板
+            openGovLinksModal();
+        }
+    });
+
+    // 貼心防呆：點擊網頁其他空白處，自動收起 tooltip
+    document.addEventListener('click', () => {
+        if (govTooltip.classList.contains('active')) {
+            govTooltip.classList.remove('active');
+        }
+    });
+
+    // 綁定關閉按鈕與點擊黑底關閉彈窗
+    closeGovBtn.addEventListener('click', closeGovLinksModal);
+    govModal.addEventListener('click', (e) => {
         if (e.target.id === 'govLinksModal') closeGovLinksModal();
     });
 
+    // 【緊急修復】：補回這兩行！呼叫初始化函數，並關閉 DOMContentLoaded 區塊
     initApp();
 });
 
@@ -417,17 +452,17 @@ function renderPagination(totalPages) {
     }
 
     // 綁定「下一頁」點擊事件
-    const nextBtn = document.getElementById('nextPageBtn');
-    if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            if (currentPage < totalPages) {
-                currentPage++;
-                const city = document.getElementById('citySelect').value;
-                const district = document.getElementById('districtSelect').value;
-                renderCards(city, district);
-                // 自動往上捲動到卡片最上方
-                document.getElementById('resultsList').scrollIntoView({ behavior: 'smooth' });
-            }
-        });
+        const nextBtn = document.getElementById('nextPageBtn');
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    const city = document.getElementById('citySelect').value;
+                    const district = document.getElementById('districtSelect').value;
+                    renderCards(city, district);
+                    // 自動往上捲動到卡片最上方
+                    document.getElementById('resultsList').scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
     }
-}
